@@ -1,0 +1,72 @@
+<html>
+<head>
+  <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.4.21.7.js"></script>
+  <script type="text/javascript" src="https://pubnub.github.io/eon/v/eon/1.0.0/eon.js"></script>
+  <link type="text/css" rel="stylesheet" href="https://pubnub.github.io/eon/v/eon/1.0.0/eon.css" />
+</head>
+<body>
+
+<div id="chart"></div>
+<script type="text/javascript">
+var __eon_pubnub = new PubNub({
+  subscribeKey: "sub-c-3fff9b64-3014-11e9-b681-be2e977db94e"
+});
+var __eon_cols = ["Me","Nick","Ritika","Emily","Sami","_eonDatetime"];
+var __eon_labels = {};
+chart = eon.chart({
+  pubnub: __eon_pubnub,
+  channels: ["face_demo"],
+  history: true,
+  flow: true,
+  rate: 1000,
+  limit: 20,
+  generate: {
+    bindto: "#chart",
+    data: {
+      colors: {"Me":"#D70060","Nick":"#E54028","Ritika":"#F18D05","Emily":"#113F8C","Sami":"#01A4A4","_eonDatetime":"#00A1CB"},
+      type: "bar"
+    },
+    transition: {
+      duration: 250
+    },
+    axis: {
+      x: {
+        label: ""
+      },
+      y: {
+        label: ""
+      }
+    },
+    grid: {
+      x: {
+        show: false
+      },
+      y: {
+        show: false
+      }
+    },
+    tooltip: {
+     show: true
+    },
+    point: {
+      show: true
+    }
+  },
+  transform: function(message) {
+    var message = eon.c.flatten(message.eon);
+    var o = {};
+    for(index in message) {
+      if(__eon_cols.indexOf(index) > -1){
+        o[__eon_labels[index] || index] = message[index];
+      }
+    }
+    return {
+      eon: o
+    };
+  }
+});
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.4.21.7.js"></script>
+  <title>EON getting starting</title>
+  	<link href='http://fonts.googleapis.com/css?family=Gorditas:700' rel='stylesheet' type='text/css'>
+  <style type="text/css">
+  body{
+    width: 550px;
+    margin: 20px auto;
+  }
+  *{
+    font-family: sans-serif;
+  }
+  #html-id{
+    height: 500px;
+  }
+  </style>
+  <script type="text/javascript" src="http://pubnub.github.io/eon/v/eon/1.0.0/eon.js"></script>
+  <link type="text/css" rel="stylesheet" href="http://pubnub.github.io/eon/v/eon/1.0.0/eon.css"/>
+</head>
+<body>
+  <h1>Getting started with EON</h1>
+  <p>Create realtime charts and maps.</p>
+  <div id="html-id"></div>
+  <script>
+  let pubnub = new PubNub({
+        publishKey:   'demo', // replace with your own pub-key
+        subscribeKey: 'demo' // replace with your own sub-key
+    });
+
+    var map = eon.map({
+                  pubnub: pubnub,
+                  channels: ['eon-map-multiple'],
+                  id: 'html-id',
+                  mbToken: 'pk.eyJ1Ijoic25laGFsbiIsImEiOiJjanN3dmtvZ3QwbHp5NDRvZDFlcmNjdzg5In0.g8NlB6dDpnzKWKxO7R72hQ',
+                  mbId: 'ianjennings.l896mh2e',
+                  message: function (data) {
+                     map.setView(data[3].latlng, 12);
+                     }
+                  });
+
+// thane,teen hath naka,nitincompany,majiwada, patlipada,last
+  setInterval(function(){
+    pubnub.publish({
+      channel:  'eon-map-multiple',
+      message:
+       [
+         {"latlng":[19.1860 ,72.9759]},
+         {"latlng":[19.1883 ,72.9635]},
+         {"latlng":[19.1992 ,72.9654]},
+         {"latlng":[19.2137 ,72.9903]},
+         {"latlng":[19.2421 ,72.9712]},
+         {"latlng":[19.2591 ,72.9844]}
+      ]
+    });
+  },1000)
+
+
+  </script>
+</body>
+</html>

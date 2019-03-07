@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.4.21.7.js"></script>
+  <title>EON getting starting</title>
+  	<link href='http://fonts.googleapis.com/css?family=Gorditas:700' rel='stylesheet' type='text/css'>
+  <style type="text/css">
+  body{
+    width: 550px;
+    margin: 20px auto;
+  }
+  *{
+    font-family: sans-serif;
+  }
+  #html-id{
+    height: 500px;
+  }
+  </style>
+  <script type="text/javascript" src="http://pubnub.github.io/eon/v/eon/1.0.0/eon.js"></script>
+  <link type="text/css" rel="stylesheet" href="http://pubnub.github.io/eon/v/eon/1.0.0/eon.css"/>
+</head>
+<body>
+  <h1>Getting started with EON</h1>
+  <p>Create realtime charts and maps.</p>
+  <div id="html-id"></div>
+  <script>
+  let pubnub = new PubNub({
+        publishKey:   'pub-c-3ed56cfd-6c5f-403f-a758-8e594439f6b6', // replace with your own pub-key
+        subscribeKey: 'sub-c-cd8f4f44-2b71-11e9-962b-4ae3de4ea26b' // replace with your own sub-key
+    });
+
+    eon.map({
+                  pubnub: pubnub,
+                  channels: ['sample_project'],
+                  id: 'html-id',
+                  mbToken: 'pk.eyJ1Ijoic25laGFsbiIsImEiOiJjanN3dmtvZ3QwbHp5NDRvZDFlcmNjdzg5In0.g8NlB6dDpnzKWKxO7R72hQ',
+                  mbId: 'ianjennings.l896mh2e'
+                  });
+
+// thane,teen hath naka,nitincompany,majiwada, patlipada,last
+  setInterval(function(){
+    pubnub.publish({
+      channel:  'sample_project',
+      message:
+       [
+         // {"latlng":[19.1860 * Math.random(),72.9759*Math.random()]}
+        {"latlng":[19.1860 ,72.9759]},
+        {"latlng":[19.1883 ,72.9635]},
+        {"latlng":[19.1992 ,72.9654]},
+        {"latlng":[19.2137 ,72.9903]},
+        {"latlng":[19.2421 ,72.9712]},
+        {"latlng":[19.2591 ,72.9844]}
+      ]
+    });
+  },1000)
+
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Leaflet</title>
+<script src="https://cdn.pubnub.com/sdk/javascript/pubnub.4.21.7.js"></script>
+    <script type="text/javascript" src="map/eon-map.js"></script>
+
+    <style type="text/css">
+      body {
+        padding: 0px;
+        margin: 0px;
+      }
+    </style>
+    <script type="text/javascript" src="http://pubnub.github.io/eon/v/eon/1.0.0/eon.js"></script>
+    <link type="text/css" rel="stylesheet" href="http://pubnub.github.io/eon/v/eon/1.0.0/eon.css"/>
+  </head>
+  <body>
+    <div style="width: 100%; height:500px" id="map"></div>
+    <div id='map'></div>
+    <script>
+      function getNonZeroRandomNumber(){
+        var random = Math.floor(Math.random()*199) - 99;
+        if(random==0) return getNonZeroRandomNumber();
+        return random;
+      }
+    </script>
+    <script>
+      var pubnub = new PubNub({
+        publishKey: 'demo',
+        subscribeKey: 'demo'
+      });
+      var channel = 'pubnub-mapbox' + getNonZeroRandomNumber();
+      var pointA = false;
+      var pointB = false;
+      var map = eon.map({
+        pubnub: pubnub,
+        id: 'map',
+        mbToken: 'pk.eyJ1Ijoic25laGFsbiIsImEiOiJjanN3dmtvZ3QwbHp5NDRvZDFlcmNjdzg5In0.g8NlB6dDpnzKWKxO7R72hQ',
+        mbId: 'ianjennings.l896mh2e',
+        channels: [channel],
+        connect: connect,
+        options: {
+          center: new L.LatLng(19.1860 ,72.9759),
+          zoom: 5
+        },
+        provider: 'google',
+        googleKey: 'AIzaSyBYcy2l0Yf4lDADZ_U0zi6dy0M6pFZyPQA',
+        googleMutant: {
+          type: 'roadmap',
+          styles: [
+              {elementType: 'labels', stylers: [{visibility: 'off'}]},
+              {featureType: 'water', stylers: [{color: '#000000'}]}
+          ]
+        },
+        message: function(message, timetoken, channel) {
+          console.log(message, timetoken, channel);
+          var currentPoint = new L.LatLng(message[0].latlng[0], message[0].latlng[1]);
+          if(pointA && pointB) {
+            var pointList = [pointA, pointB];
+            console.log(pointA)
+            var firstpolyline = new L.Polyline(pointList, {
+                color: 'red',
+                weight: 3,
+                opacity: 0.5,
+                smoothFactor: 1
+            });
+            console.log(map)
+            firstpolyline.addTo(map);
+          }
+          pointB = pointA;
+          pointA = currentPoint;
+        }
+      });
+      function connect() {
+        var point = {
+            latlng:[19.1860 ,72.9759]
+          // latlng: [37.370375, -97.756138]
+        };
+        setInterval(function(){
+          var new_point = JSON.parse(JSON.stringify(point));
+          new_point.latlng = [
+            new_point.latlng[0] + (getNonZeroRandomNumber() * 0.05),
+            new_point.latlng[1] + (getNonZeroRandomNumber() * 0.1)
+          ];
+          pubnub.publish({
+            channel: channel,
+            message: [new_point]
+          });
+        }, 1000);
+      };
+    </script>
+  </body>
+</html>

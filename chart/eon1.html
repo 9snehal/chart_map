@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.4.21.7.js"></script>
+  <title>EON getting starting</title>
+  	<link href='http://fonts.googleapis.com/css?family=Gorditas:700' rel='stylesheet' type='text/css'>
+  <style type="text/css">
+  body{
+    width: 550px;
+    margin: 20px auto;
+  }
+  *{
+    font-family: sans-serif;
+  }
+  </style>
+  <script type="text/javascript" src="http://pubnub.github.io/eon/v/eon/1.0.0/eon.js"></script>
+  <link type="text/css" rel="stylesheet" href="http://pubnub.github.io/eon/v/eon/1.0.0/eon.css"/>
+</head>
+<body>
+  <h1>Getting started with EON</h1>
+  <p>Create realtime charts and maps.</p>
+  <div id="body-spline"></div>
+  <script>
+  let pubnub = new PubNub({
+        publishKey:   'pub-c-3ed56cfd-6c5f-403f-a758-8e594439f6b6', // replace with your own pub-key
+        subscribeKey: 'sub-c-cd8f4f44-2b71-11e9-962b-4ae3de4ea26b' // replace with your own sub-key
+    });
+
+  eon.chart({
+pubnub:pubnub,
+channels: ['sample_project'],
+limit: 20,
+flow:true,
+generate: {
+bindto: '#body-spline',
+data:{
+  type:"spline" //spline,line,area,area spline,step,area step,scatter,bar,pie
+}
+}
+});
+
+setInterval(function(){
+  pubnub.publish({
+    channel:['sample_project'],
+    message:{
+      "eon":{
+              "Me":24*Math.random(),
+              "Nick":23*Math.random(),
+              "Ritika":11*Math.random(),
+              "Emily":10*Math.random(),
+              "Sami":20*Math.random()
+    }
+}
+});
+}, 1000);
+  </script>
+</body>
+</html>
